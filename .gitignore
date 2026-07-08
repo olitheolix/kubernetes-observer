@@ -1,0 +1,15 @@
+# Temporary files and folders
+**/*~
+**/__pycache__
+
+
+# Unit tests.
+.coverage*
+.ropeproject/
+coverage.xml
+htmlcov/
+
+# Binaries.
+build/
+dist/
+kubernetes_square.egg-info/

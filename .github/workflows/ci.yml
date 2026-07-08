@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # kind binary version (distinct from the kindest/node K8s image pinned in
+  # integration-test-cluster/start_cluster.sh). Bump when you upgrade locally.
+  KIND_VERSION: v0.31.0
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: ruff check
+        run: uvx ruff check
+
+      - name: ruff format --check
+        run: uvx ruff format --check
+
+      - name: ty check
+        run: uvx ty check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: Install KinD
+        # Install into a user-writable dir already on PATH (no sudo needed).
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -fsSLo "$HOME/.local/bin/kind" \
+            "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x "$HOME/.local/bin/kind"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/kind" version
+
+      # ubuntu-latest ships kubectl, which the live test shells out to. Print
+      # its version so a future runner-image change that drops it fails loudly
+      # here rather than deep inside the test.
+      - name: Verify kubectl is available
+        run: kubectl version --client
+
+      - name: Create KinD cluster
+        run: integration-test-cluster/start_cluster.sh
+
+      - name: Run test suite
+        # pytest is configured (pyproject.toml) to fail if coverage < 100%.
+        run: uv run pytest
