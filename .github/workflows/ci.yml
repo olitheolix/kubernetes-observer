@@ -67,7 +67,8 @@ jobs:
           # Download KinD
           curl -fsSLo "$HOME/.local/bin/kind" "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
           chmod +x "$HOME/.local/bin/kind"
-          "$HOME/.local/bin/kind" version
+          export PATH="$HOME/.local/bin:$PATH"
+          kind version
 
       - name: Verify kubectl is available
         run: kubectl version --client
