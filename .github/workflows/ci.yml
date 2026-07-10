@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # kind binary version (distinct from the kindest/node K8s image pinned in
+  # integration-test-cluster/start_cluster.sh). Bump when you upgrade locally.
+  KIND_VERSION: v0.31.0
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: ruff check
+        run: uvx ruff check
+
+      - name: ruff format --check
+        run: uvx ruff format --check
+
+      - name: ty check
+        run: uvx ty check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: Install KinD
+        # Install into a user-writable dir already on PATH.
+        run: |
+          # Create ~/bin and add it to path.
+          mkdir -p "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+          # Download KinD
+          curl -fsSLo "$HOME/.local/bin/kind" "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x "$HOME/.local/bin/kind"
+
+      - name: Verify KinD installation
+        run: kind version
+
+      - name: Verify kubectl is available
+        run: kubectl version --client
+
+      - name: Create KinD cluster
+        run: integration-test-cluster/start_cluster.sh
+
+      - name: Run test suite
+        run: uv run pytest
