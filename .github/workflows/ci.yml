@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
   pull_request:
 
 # Cancel superseded runs on the same ref.
@@ -27,6 +26,9 @@ jobs:
         with:
           python-version: "3.13"
           enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync
 
       - name: ruff check
         run: uvx ruff check
@@ -53,18 +55,17 @@ jobs:
         run: uv sync
 
       - name: Install KinD
-        # Install into a user-writable dir already on PATH (no sudo needed).
+        # Install into a user-writable dir already on PATH.
         run: |
+          # Create ~/bin and add it to path.
           mkdir -p "$HOME/.local/bin"
-          curl -fsSLo "$HOME/.local/bin/kind" \
-            "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
-          chmod +x "$HOME/.local/bin/kind"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           "$HOME/.local/bin/kind" version
 
-      # ubuntu-latest ships kubectl, which the live test shells out to. Print
-      # its version so a future runner-image change that drops it fails loudly
-      # here rather than deep inside the test.
+          # Download KinD
+          curl -fsSLo "$HOME/.local/bin/kind" "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x "$HOME/.local/bin/kind"
+
       - name: Verify kubectl is available
         run: kubectl version --client
 
@@ -72,5 +73,4 @@ jobs:
         run: integration-test-cluster/start_cluster.sh
 
       - name: Run test suite
-        # pytest is configured (pyproject.toml) to fail if coverage < 100%.
         run: uv run pytest
