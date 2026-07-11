@@ -42,7 +42,10 @@ class TestWatchMockedBackgroundTask:
     def setup(self):
         """Replace the list of tasks with a list of a single mock."""
         with mock.patch.object(k8s_watch.watch.WatchResource, "start_tasks") as m:
-            m.return_value = [mock.AsyncMock()]
+            # Model a real `asyncio.Task`: awaitable, but with a *synchronous*
+            # `.result()`. A bare `AsyncMock` makes `.result()` return an
+            # unawaited coroutine, which triggers a `RuntimeWarning`.
+            m.return_value = [mock.AsyncMock(spec=asyncio.Task)]
             yield
 
     async def test_ctor(self, k8scfg: K8sConfig):

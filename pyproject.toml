@@ -21,7 +21,7 @@ dev = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-addopts = "-p no:warnings --cov=k8s_watch --cov-report=term-missing --cov-report=xml --cov-fail-under=100"
+addopts = "--cov=k8s_watch --cov-report=term-missing --cov-report=xml --cov-fail-under=100"
 
 [tool.coverage.run]
 branch = false
