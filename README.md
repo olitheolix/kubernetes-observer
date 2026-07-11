@@ -1,3 +1,9 @@
+[![](https://img.shields.io/badge/license-Apache%202-blue.svg)]()
+[![](https://img.shields.io/badge/python-3.13,3.14-blue.svg)]()
+[![](https://github.com/olitheolix/kubernetes-observer/workflows/CI/badge.svg)]()
+[![](https://img.shields.io/codecov/c/github/olitheolix/kubernetes-observer.svg?style=flat)]()
+
+
 # kubernetes-observer
 
 Async Kubernetes resource watcher (`k8s_watch` module).
