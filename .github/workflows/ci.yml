@@ -79,3 +79,11 @@ jobs:
 
       - name: Run test suite
         run: uv run pytest
+
+      - uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: false
