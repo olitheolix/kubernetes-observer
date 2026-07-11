@@ -28,6 +28,7 @@ branch = false
 omit = [
     "tests/*",
     "delme*",
+    "examples/*",
 ]
 
 [build-system]

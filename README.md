@@ -50,7 +50,30 @@ uv run pytest
 uvx ruff check && uvx ruff format && uvx ty check
 ```
 
+### Demo
+
+With the KinD cluster running, watch namespace events live:
+
+```console
+$ uv run examples/watch_namespaces.py
+ADDED kube-system
+ADDED default
+ADDED kube-public
+ADDED foo
+MODIFIED foo
+MODIFIED foo
+DELETED foo
+```
+
+It prints every event on `/api/v1/namespaces` until you press Ctrl-C. To see
+events flow, create and delete a namespace from another terminal:
+
+```bash
+kubectl --kubeconfig=/tmp/kubeconfig-kind.yaml create namespace demo
+kubectl --kubeconfig=/tmp/kubeconfig-kind.yaml delete namespace demo
+```
+
 ## Why
-I have been using and tweaking this code over the years in various projects
-with minor modifications in each, and finally decided to create one canonical
-version. This is mostly useful to me, but maybe others find it useful too.
+I have used and tweaked this code over the years in various projects with minor
+modifications in each. Now I finally decided to create one canonical version.
+This is mostly useful to me, but maybe others find it useful too.
