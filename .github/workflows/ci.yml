@@ -27,7 +27,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          python-version: "3.13"
+          python-version: "3.14"
           enable-cache: true
 
       - name: Sync dependencies
@@ -44,6 +44,11 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.14 is the primary version; 3.13 is tested for compatibility only.
+        python-version: ["3.14", "3.13"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -51,7 +56,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          python-version: "3.13"
+          python-version: "${{ matrix.python-version }}"
           enable-cache: true
 
       - name: Sync dependencies
@@ -81,6 +86,8 @@ jobs:
         run: uv run pytest
 
       - uses: codecov/codecov-action@v5
+        # Upload coverage from a single matrix leg to avoid duplicate reports.
+        if: matrix.python-version == '3.14'
         with:
           files: ./coverage.xml
           flags: unittests
