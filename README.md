@@ -39,9 +39,15 @@ async with (
 ## Development
 
 ```bash
+# Spin up a local KinD cluster.
+integration-test-cluster/start_cluster.sh
+
+# Run Test Suite
 uv sync
-integration-test-cluster/start_cluster.sh   # spin up a local KinD cluster
-uv run pytest                               # runs the full suite, including the live test
+uv run pytest
+
+# Linting
+uvx ruff check && uvx ruff format && uvx ty check
 ```
 
 ## Why
