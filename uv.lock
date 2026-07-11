@@ -260,7 +260,7 @@ dev = [
 
 [[package]]
 name = "kubernetes-square"
-version = "2.5.0"
+version = "2.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
@@ -273,9 +273,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "tenacity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/91/96e2a82105df8b49bf5cf1e9452756c1b7fe394ffc8fc3738d79b78d2561/kubernetes_square-2.5.0.tar.gz", hash = "sha256:639ccef3000b4cd3867e98e499b417a8fc2a8d33d805a1f379cd940c66ad8abb", size = 111784, upload-time = "2026-05-04T06:06:45.359Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/f8/9dca6acff4eb8b945eab1b05c1881578ebbba93fd117c9ca08e8cea4b1f3/kubernetes_square-2.6.0.tar.gz", hash = "sha256:29591c48974ece348fee6b8600b4ae01e915894c3b5a4dde52b3dd9bb43ab858", size = 120398, upload-time = "2026-07-11T02:02:42.441Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/0b/310af9e3a5243ffb17acb5eb353b29e3a814cb09aa5d8a9ba4ac3c6d3600/kubernetes_square-2.5.0-py3-none-any.whl", hash = "sha256:99e577b6924e1db426b7dddf8c1510f27de01d5dd8f74b8c5423a5677977ad53", size = 57409, upload-time = "2026-05-04T06:06:43.038Z" },
+    { url = "https://files.pythonhosted.org/packages/80/77/3f7df549d32cffa567e48147937be853f036ed2a5e49999e74c8650fa889/kubernetes_square-2.6.0-py3-none-any.whl", hash = "sha256:28a83294ac714b591ed522dbfe73c71d8c3a53f2bc0fc73273f73f56ce17b970", size = 61082, upload-time = "2026-07-11T02:02:40.896Z" },
 ]
 
 [[package]]
